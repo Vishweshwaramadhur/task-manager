@@ -4,7 +4,7 @@ A simple web-based task manager built with Flask, HTML, CSS, and JavaScript.
 
 ## Implementation Approach
 
-- **Backend**: Used Flask framework to create REST API endpoints for adding, toggling, and deleting tasks
+- **Backend**:  Used Flask to create routes (URLs) for adding, toggling, and deleting tasks
 - **Frontend**: Built with HTML, CSS, and JavaScript. JavaScript uses `fetch()` API to communicate with the backend
 - **Data Storage**: Tasks are stored in `tasks.json` file. The file is loaded on app startup and saved after every operation
 - **Error Handling**: Added try-except blocks to handle JSON errors and invalid requests
