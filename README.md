@@ -39,31 +39,29 @@ task-manager/
 
 ## Installation & Setup
 
-### Step 1: (Optional but Recommended) Create Virtual Environment
+### Step 1: Clone the repository
+
+```bash
+git clone <your-repo-url>
+```
+
+### Step 2: Enter the project folder
+
+```bash
+cd task-manager
+```
+
+### Step 3: Create and activate the virtual environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate 
 ```
 
-### Step 2: Install Flask
+### Step 4: Install Flask
 
 ```bash
 pip install flask
-```
-
-### Step 3: Download/Clone the Project
-
-```bash
-git clone <your-repo-url>
-cd task-manager
-```
-
-Or create the folder structure manually:
-```bash
-mkdir task-manager
-cd task-manager
-mkdir templates static
 ```
 
 ## How to Run
