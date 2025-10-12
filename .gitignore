@@ -2,5 +2,5 @@
 venv/
 
 
-# Task data (optional - remove this line if you want to commit tasks.json)
+# Task data
 tasks.json

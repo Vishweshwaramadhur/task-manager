@@ -81,5 +81,3 @@ mkdir templates static
 1. **Add Task**: Enter title and description, click "Add Task"
 2. **Complete Task**: Click the "Complete" button (or "Incomplete" to undo)
 3. **Delete Task**: Click "Delete" button and confirm
-
-
