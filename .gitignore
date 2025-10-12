@@ -1,0 +1,6 @@
+# Environment
+venv/
+
+
+# Task data (optional - remove this line if you want to commit tasks.json)
+tasks.json
