@@ -19,7 +19,7 @@ A simple web-based task manager built with Flask, HTML, CSS, and JavaScript.
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.x (tested on Python 3.12.3)
 - Flask
 
 ## Project Structure
