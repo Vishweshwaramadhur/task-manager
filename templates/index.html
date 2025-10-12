@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Task Manager</h1>
+
+        <div class="new-task">
+            <input type="text" id="title" placeholder="Enter task title">
+            <input type="text" id="description" placeholder="Enter task description">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+
+        <ul id="task-list">
+            {% for task in tasks %}
+            <li class="{{ 'completed' if task.completed else '' }}">
+                <div class="content">
+                    <strong>{{ task.title }}</strong>: {{ task.description }}
+                </div>
+                <div class="buttons">
+                    <button onclick="toggleTask({{ loop.index0 }})">
+                        {{ 'Incomplete' if task.completed else 'Complete' }}
+                    </button>
+                    <button onclick="deleteTask({{ loop.index0 }})">Delete</button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
