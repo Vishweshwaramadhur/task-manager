@@ -39,13 +39,20 @@ task-manager/
 
 ## Installation & Setup
 
-### Step 1: Install Flask
+### Step 1: (Optional but Recommended) Create Virtual Environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate 
+```
+
+### Step 2: Install Flask
 
 ```bash
 pip install flask
 ```
 
-### Step 2: Download/Clone the Project
+### Step 3: Download/Clone the Project
 
 ```bash
 git clone <your-repo-url>
@@ -75,6 +82,7 @@ mkdir templates static
 
 4. **Stop the server**
    - Press `Ctrl + C` in terminal
+   - Enter `deactivate` 
 
 ## How to Use
 
