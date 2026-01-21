@@ -11,12 +11,12 @@ async function addTask() {
     try {
         const response = await fetch('/add', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title, description })
         });
 
         const result = await response.json();
-        
+
         if (response.ok) {
             location.reload();
         } else {
@@ -27,21 +27,21 @@ async function addTask() {
     }
 }
 
-// Toggle task completion
-async function toggleTask(index) {
+// Toggle task completion (USE ID, NOT INDEX)
+async function toggleTask(id) {
     try {
-        await fetch(`/toggle/${index}`, { method: 'POST' });
+        await fetch(`/toggle/${id}`, { method: 'POST' });
         location.reload();
     } catch (error) {
         alert("Error updating task: " + error);
     }
 }
 
-// Delete task
-async function deleteTask(index) {
+// Delete task (USE ID, NOT INDEX)
+async function deleteTask(id) {
     if (confirm("Delete this task?")) {
         try {
-            await fetch(`/delete/${index}`, { method: 'POST' });
+            await fetch(`/delete/${id}`, { method: 'POST' });
             location.reload();
         } catch (error) {
             alert("Error deleting task: " + error);

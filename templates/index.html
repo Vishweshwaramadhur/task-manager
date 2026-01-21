@@ -25,10 +25,10 @@
                     <strong>{{ task.title }}</strong>: {{ task.description }}
                 </div>
                 <div class="buttons">
-                    <button onclick="toggleTask({{ loop.index0 }})">
+                    <button onclick="toggleTask({{ task.id }})">
                         {{ 'Incomplete' if task.completed else 'Complete' }}
                     </button>
-                    <button onclick="deleteTask({{ loop.index0 }})">Delete</button>
+                    <button onclick="deleteTask({{ task.id }})">Delete</button>
                 </div>
             </li>
             {% endfor %}
