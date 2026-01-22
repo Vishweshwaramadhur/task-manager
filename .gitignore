@@ -1,6 +1,8 @@
 # Environment
 venv/
-
+.env
+.env.save
+__pycache__/
 
 # Task data
 tasks.json
