@@ -1,0 +1,22 @@
+.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+#done-table th {
+    white-space: nowrap;
+}
+
+.task-edit .form-control {
+    max-width: 300px;
+}
+
+.task-display,
+.task-edit {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-group-wrap {
+    flex-shrink: 0;
+}

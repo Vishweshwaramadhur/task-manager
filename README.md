@@ -1,92 +1,93 @@
-# Task Manager Application
+# Task Manager
 
-A simple web-based task manager built with Flask, HTML, CSS, and JavaScript.
-
-## Implementation Approach
-
-- Backend: Used Flask to create routes (URLs) for adding, toggling, and deleting tasks
-- Frontend: Built with HTML, CSS, and JavaScript. JavaScript uses fetch() API to communicate with the backend
-- Data Storage: Tasks are stored in a MySQL database. Data is fetched and updated directly from the database
-- Error Handling: Added basic validation and error responses using Flask and jsonify
+A simple task manager web app built with Flask and MySQL that lets you create, complete, and delete tasks with a clean Bootstrap UI.
 
 ## Features
 
 - Add new tasks with title and description
-- Mark tasks as complete/incomplete
-- Delete tasks
-- View all tasks in a list
-- Data saved in MySQL database
+- Edit tasks inline (both pending and completed tasks)
+- Mark tasks as complete (moves them off the main page)
+- Delete tasks (both pending and completed)
+- View completed tasks in a separate modal
+- Main page shows only pending tasks
+- Task timestamps (created at)
+- Input validation (length limits, required fields)
+- Responsive design with Bootstrap 5
+- Error handling
 
-## Requirements
+## Tech Stack
 
-- Python 3.x (tested on Python 3.12.3)
-- Flask
-- MySQL Server
-- mysql-connector-python
+- **Backend:** Flask, MySQL Connector, python-dotenv
+- **Frontend:** HTML5, Bootstrap 5, Bootstrap Icons, JavaScript
+- **Database:** MySQL
+
+## Installation
+
+1. Clone the repository
+```bash
+git clone <your-repo-url>
+cd task-manager
+```
+
+2. Create `.env` file from sample
+```bash
+cp .env.sample .env
+```
+
+3. Update `.env` with your MySQL credentials
+```
+DB_HOST=localhost
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=taskmanager
+```
+
+4. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+5. Run the application
+```bash
+python app.py
+```
+
+6. Open browser at `http://127.0.0.1:5000`
+
+> The tasks table is created automatically on first run.
 
 ## Project Structure
 
+```
 task-manager/
 ├── app.py
+├── requirements.txt
+├── .env
+├── .env.sample
+├── .gitignore
 ├── templates/
 │   └── index.html
 ├── static/
-│   ├── style.css
-│   └── script.js
-├── README.md
-└── .gitignore
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       └── app.js
+└── README.md
+```
 
-## Installation & Setup
+## Environment Variables
 
-Step 1: Clone the repository
+Create a `.env` file with the following variables:
 
-git clone <your-repo-url>
+```
+FLASK_DEBUG=True
 
-Step 2: Enter the project folder
+DB_HOST=localhost
+DB_USER=your_user_here
+DB_PASSWORD=your_password_here
+DB_NAME=taskmanager
+```
 
-cd task-manager
+## License
 
-Step 3: Create and activate the virtual environment
-
-python3 -m venv venv
-source venv/bin/activate
-
-Step 4: Install required packages
-
-pip install flask mysql-connector-python
-
-## Database Setup
-
-sudo mysql
-
-CREATE DATABASE taskmanager;
-USE taskmanager;
-
-CREATE TABLE tasks (
-id INT AUTO_INCREMENT PRIMARY KEY,
-title VARCHAR(100),
-description TEXT,
-completed BOOLEAN DEFAULT FALSE
-);
-
-## How to Run
-
-1. Open terminal in project folder
-
-2. Run the application
-
-python3 app.py
-
-3. Open your browser and go to
-
-http://127.0.0.1:5000
-
-4. Stop the server
-- Press Ctrl + C in terminal
-- Enter deactivate
-
-## How to Use
-
-1. Add Task: Enter title and description, click "Add Task"
-2. Complete Task: Click the "Complete" button (or "Incomplete" to undo)
-3. Delete Task: Click "Delete" button and confirm
+Free to use for learning and portfolio projects.
