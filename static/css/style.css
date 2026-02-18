@@ -23,17 +23,57 @@
     border-bottom: 2px solid #fff;
 }
 
-/* Dashboard cards */
-.card.shadow .display-4 {
-    opacity: 0.8;
-}
-
-.card.shadow:hover {
-    transform: translateY(-2px);
-    transition: transform 0.2s ease;
-}
-
 /* Completed table */
 .table th {
     white-space: nowrap;
+}
+
+/* Category badge */
+.category-badge {
+    font-weight: 500;
+    font-size: 0.75em;
+}
+
+/* Home page category cards */
+.cat-card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.cat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Dashboard stat cards */
+.stat-card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+/* Categories table */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table > tbody > tr:last-child > td {
+    border-bottom: none;
 }

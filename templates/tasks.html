@@ -5,9 +5,46 @@
 {% block content %}
 <div class="row justify-content-center mt-3">
     <div class="col-md-10">
+        <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-dark mb-3">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
         <div class="card shadow-lg">
-            <div class="card-header fw-bold bg-secondary text-white">
-                <i class="bi bi-list-task"></i> Pending Tasks
+            <div class="card-header fw-bold bg-secondary text-white d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-list-task"></i> Pending Tasks</span>
+                <div>
+                    <a href="/export/pdf?type=pending" class="btn btn-sm btn-outline-light me-1">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </a>
+                    {% if tasks %}
+                    <button class="btn btn-sm btn-outline-light" onclick="clearAllPending()">
+                        <i class="bi bi-trash3"></i> Clear All
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sort & Filter Controls -->
+            <div class="card-body border-bottom py-2">
+                <form method="GET" action="{{ url_for('tasks_page') }}" class="row g-2 align-items-end">
+                    <div class="col-auto">
+                        <label class="form-label mb-0 small text-muted">Sort by</label>
+                        <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                            <option value="az" {% if current_sort == 'az' %}selected{% endif %}>A-Z</option>
+                            <option value="za" {% if current_sort == 'za' %}selected{% endif %}>Z-A</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label mb-0 small text-muted">Category</label>
+                        <select name="category" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
             </div>
 
             {% if tasks %}
@@ -19,6 +56,9 @@
                         <h6 class="mb-1">
                             {{ task.title }}
                             <span class="badge bg-warning text-dark ms-2">Pending</span>
+                            {% if task.category %}
+                            <span class="badge bg-info text-dark ms-1 category-badge">{{ task.category }}</span>
+                            {% endif %}
                         </h6>
                         <small class="text-muted">{{ task.description }}</small>
                     </div>

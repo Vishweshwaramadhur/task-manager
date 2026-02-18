@@ -1,16 +1,21 @@
 # Task Manager
 
-A simple task manager web app built with Flask and MySQL with a clean multi-page Bootstrap UI.
+A multi-page task manager web app built with Flask and MySQL with a clean Bootstrap UI. Organize tasks by categories with sorting, filtering, PDF export, and more.
 
 ## Features
 
-- **Dashboard** with pending and completed task counts
-- **Add tasks** with title and description on a dedicated page
-- **Edit tasks** on a separate edit page with save and cancel
-- **Mark tasks as complete** from the pending tasks page
-- **Delete tasks** (both pending and completed)
-- **View completed tasks** on a full-page table
-- Template inheritance with a shared navbar
+- **Category-based organization** — 8 predefined categories: Study, Shopping, Business, Personal, Health, Finance, Travel, Other
+- **Category detail pages** — view pending and completed tasks per category with counts
+- **Add tasks** with title, description, and required category
+- **Edit tasks** with category preserved
+- **Mark tasks as complete** and **undo complete** to move back to pending
+- **Sort tasks** by Newest, Oldest, A-Z, Z-A
+- **Filter tasks** by category on pending and completed pages
+- **Clear all pending** — bulk delete all pending tasks (per page or per category)
+- **Clear all completed** — bulk delete all completed tasks (per page or per category)
+- **Export as PDF** — download tasks as PDF (all, pending, completed, or per category)
+- **Seed dummy data** — terminal command to add 24 sample tasks (3 per category)
+- **Back to Home** navigation on every page
 - Input validation (length limits, required fields)
 - Flash messages for success/error feedback
 - Responsive design with Bootstrap 5
@@ -19,15 +24,17 @@ A simple task manager web app built with Flask and MySQL with a clean multi-page
 
 | URL | Page | Description |
 |-----|------|-------------|
-| `/` | Dashboard | Task counts + links to all pages |
-| `/add-task` | Add Task | Form to create a new task |
-| `/tasks` | Pending Tasks | List with complete/edit/delete actions |
-| `/completed` | Completed Tasks | Table with edit/delete actions |
-| `/edit/<id>` | Edit Task | Form to edit title and description |
+| `/` | Home | Category cards with task counts + Add New Task |
+| `/category/<name>` | Category Detail | Pending & completed tasks, stats, add/export/clear actions |
+| `/add-task` | Add Task | Form with title, description, category (required) |
+| `/edit/<id>` | Edit Task | Form to edit title, description, and category |
+| `/tasks` | Pending Tasks | Full list with sort, filter, complete/edit/delete actions |
+| `/completed` | Completed Tasks | Table with sort, filter, undo/edit/delete actions |
+| `/export/pdf` | Export PDF | Download tasks as PDF (`?type=pending\|completed\|all&category=`) |
 
 ## Tech Stack
 
-- **Backend:** Flask, MySQL Connector, python-dotenv
+- **Backend:** Flask, MySQL Connector, python-dotenv, fpdf2
 - **Frontend:** HTML5, Bootstrap 5, Bootstrap Icons, JavaScript
 - **Database:** MySQL
 
@@ -66,6 +73,16 @@ python app.py
 
 > The tasks table is created automatically on first run.
 
+## Seed Dummy Data
+
+To add 24 sample tasks (3 per category) for testing, run:
+
+```bash
+python app.py seed
+```
+
+You can run this command multiple times to add more dummy data.
+
 ## Project Structure
 
 ```
@@ -78,6 +95,7 @@ task-manager/
 ├── templates/
 │   ├── base.html
 │   ├── index.html
+│   ├── category.html
 │   ├── add_task.html
 │   ├── tasks.html
 │   ├── completed.html

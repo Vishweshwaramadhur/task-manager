@@ -31,3 +31,37 @@ async function deleteCompletedTask(id) {
         }
     }
 }
+
+// Clear all pending tasks (optionally by category)
+async function clearAllPending(category) {
+    var msg = category
+        ? `Delete all pending "${category}" tasks? This cannot be undone.`
+        : "Delete all pending tasks? This cannot be undone.";
+    if (confirm(msg)) {
+        try {
+            var url = "/delete-pending";
+            if (category) url += "?category=" + encodeURIComponent(category);
+            await fetch(url, { method: "DELETE" });
+            location.reload();
+        } catch (error) {
+            alert("Error clearing pending tasks: " + error);
+        }
+    }
+}
+
+// Clear all completed tasks (optionally by category)
+async function clearAllCompleted(category) {
+    var msg = category
+        ? `Delete all completed "${category}" tasks? This cannot be undone.`
+        : "Delete all completed tasks? This cannot be undone.";
+    if (confirm(msg)) {
+        try {
+            var url = "/delete-completed";
+            if (category) url += "?category=" + encodeURIComponent(category);
+            await fetch(url, { method: "DELETE" });
+            location.reload();
+        } catch (error) {
+            alert("Error clearing completed tasks: " + error);
+        }
+    }
+}
