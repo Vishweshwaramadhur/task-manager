@@ -1,7 +1,9 @@
 import sys
+import random
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, g, Response
 from fpdf import FPDF
+from faker import Faker
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -27,73 +29,6 @@ SORT_OPTIONS = {
 }
 
 CATEGORIES = ["Study", "Shopping", "Business", "Personal", "Health", "Finance", "Travel", "Other"]
-
-CATEGORY_TEMPLATES = {
-    "Study": [
-        ("Complete {} assignment", "Finish all exercises for {} before the deadline"),
-        ("Read {} textbook", "Read chapters on {} for the upcoming exam"),
-        ("Prepare {} presentation", "Create slides and notes for {} project"),
-        ("Revise {} notes", "Go through all {} notes and make summaries"),
-        ("Submit {} homework", "Complete and submit the {} homework on time"),
-        ("Practice {} problems", "Solve at least 10 practice problems in {}"),
-    ],
-    "Shopping": [
-        ("Buy {} from store", "Pick up {} along with other essentials"),
-        ("Order {} online", "Check reviews and order {} from the best seller"),
-        ("Get {} for kitchen", "Need to restock {} for the week"),
-        ("Shop for {} clothes", "Find good deals on {} at the mall"),
-        ("Purchase {} supplies", "Buy {} supplies before they run out"),
-        ("Compare prices for {}", "Check multiple stores for the best price on {}"),
-    ],
-    "Business": [
-        ("Prepare {} report", "Draft and review the {} report for management"),
-        ("Schedule {} meeting", "Set up a meeting to discuss {} with the team"),
-        ("Send {} proposal", "Finalize and send the {} proposal to the client"),
-        ("Review {} contract", "Go through the {} contract terms carefully"),
-        ("Update {} strategy", "Revise the {} strategy based on recent data"),
-        ("Follow up on {} deal", "Check status and follow up on the {} deal"),
-    ],
-    "Personal": [
-        ("Organize {}", "Sort and organize {} at home this weekend"),
-        ("Call {} friend", "Catch up with {} over a phone call"),
-        ("Fix {} at home", "Repair or replace the broken {} at home"),
-        ("Clean {}", "Deep clean the {} area thoroughly"),
-        ("Plan {} event", "Make arrangements for the upcoming {} event"),
-        ("Update {} documents", "Renew or update all {} related documents"),
-    ],
-    "Health": [
-        ("Do {} workout", "Complete a full {} workout session today"),
-        ("Book {} appointment", "Schedule a {} checkup with the doctor"),
-        ("Prepare {} meal", "Cook a healthy {} meal for the day"),
-        ("Track {} intake", "Log daily {} intake in the health app"),
-        ("Buy {} supplements", "Purchase {} supplements from the pharmacy"),
-        ("Try {} exercise", "Start a new {} exercise routine this week"),
-    ],
-    "Finance": [
-        ("Pay {} bill", "Clear the pending {} bill before due date"),
-        ("Review {} expenses", "Analyze last month's {} spending"),
-        ("Set up {} budget", "Create a monthly budget for {} expenses"),
-        ("Compare {} plans", "Research and compare different {} plans"),
-        ("File {} paperwork", "Complete and submit {} financial paperwork"),
-        ("Cancel unused {} subscription", "Stop paying for the unused {} service"),
-    ],
-    "Travel": [
-        ("Book {} tickets", "Search and book the best {} tickets available"),
-        ("Pack {} essentials", "Prepare and pack all {} essentials for the trip"),
-        ("Reserve {} accommodation", "Find and book {} accommodation online"),
-        ("Plan {} itinerary", "Create a detailed {} travel itinerary"),
-        ("Get {} insurance", "Purchase {} travel insurance before the trip"),
-        ("Download {} maps", "Save offline {} maps for navigation"),
-    ],
-    "Other": [
-        ("Donate old {}", "Gather and donate old {} to charity"),
-        ("Return {} to store", "Take back the {} and get a refund"),
-        ("Register for {} course", "Sign up for an online {} course"),
-        ("Replace {} at home", "Buy a new {} to replace the old one"),
-        ("Organize {} files", "Sort through and organize all {} files"),
-        ("Learn about {}", "Spend time researching and learning about {}"),
-    ],
-}
 
 
 def get_db():
@@ -132,18 +67,13 @@ def init_db():
 
 
 def seed_db():
-    import random
-    from faker import Faker
     fake = Faker()
 
     tasks = []
     for category in CATEGORIES:
-        templates = CATEGORY_TEMPLATES[category]
-        chosen = random.sample(templates, 3)
-        for title_tpl, desc_tpl in chosen:
-            word = fake.word().capitalize()
-            title = title_tpl.format(word)
-            description = desc_tpl.format(word)
+        for _ in range(3):
+            title = fake.sentence(nb_words=random.randint(3, 6)).rstrip(".")
+            description = fake.paragraph(nb_sentences=random.randint(1, 3))
             completed = random.choice([True, False])
             tasks.append((title, description, category, completed))
 
