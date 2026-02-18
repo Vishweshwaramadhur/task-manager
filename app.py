@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, g
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, g
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-me")
 
 DB_CONFIG = {
     "host": os.environ.get("DB_HOST", "localhost"),
@@ -48,27 +49,94 @@ def init_db():
     conn.close()
 
 
+# ── Page Routes ──────────────────────────────────────────────
+
 @app.route("/")
 def home():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT COUNT(*) AS cnt FROM tasks WHERE completed=0")
+    pending_count = cursor.fetchone()["cnt"]
+    cursor.execute("SELECT COUNT(*) AS cnt FROM tasks WHERE completed=1")
+    completed_count = cursor.fetchone()["cnt"]
+    cursor.close()
+    return render_template(
+        "index.html",
+        pending_count=pending_count,
+        completed_count=completed_count,
+        active_page="home",
+    )
+
+
+@app.route("/add-task")
+def add_task_page():
+    return render_template("add_task.html", active_page="add_task")
+
+
+@app.route("/tasks")
+def tasks_page():
     db = get_db()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM tasks WHERE completed=0 ORDER BY id DESC")
     tasks = cursor.fetchall()
     cursor.close()
-    return render_template("index.html", tasks=tasks)
+    return render_template("tasks.html", tasks=tasks, active_page="tasks")
+
+
+@app.route("/completed")
+def completed_page():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tasks WHERE completed=1 ORDER BY id DESC")
+    tasks = cursor.fetchall()
+    cursor.close()
+
+    for task in tasks:
+        if task.get("created_at"):
+            task["created_at"] = task["created_at"].strftime("%Y-%m-%d %H:%M")
+
+    return render_template("completed.html", tasks=tasks, active_page="completed")
+
+
+# ── API Routes ───────────────────────────────────────────────
+
+@app.route("/api/completed")
+def api_completed_tasks():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tasks WHERE completed=1 ORDER BY id DESC")
+    tasks = cursor.fetchall()
+    cursor.close()
+
+    for task in tasks:
+        if task.get("created_at"):
+            task["created_at"] = task["created_at"].strftime("%Y-%m-%d %H:%M")
+
+    return jsonify(tasks), 200
 
 
 @app.route("/add", methods=["POST"])
 def add_task():
-    data = request.get_json()
-    title = data.get("title", "").strip()
-    description = data.get("description", "").strip()
+    # Support both JSON API and HTML form submissions
+    if request.is_json:
+        data = request.get_json()
+        title = data.get("title", "").strip()
+        description = data.get("description", "").strip()
+    else:
+        title = request.form.get("title", "").strip()
+        description = request.form.get("description", "").strip()
 
     if not title or not description:
-        return jsonify({"error": "Title and description required"}), 400
+        if request.is_json:
+            return jsonify({"error": "Title and description required"}), 400
+        flash("Title and description are required.", "danger")
+        return redirect(url_for("add_task_page"))
 
     if len(title) > 255 or len(description) > 2000:
-        return jsonify({"error": "Title (max 255) or description (max 2000) too long"}), 400
+        if request.is_json:
+            return jsonify({"error": "Title (max 255) or description (max 2000) too long"}), 400
+        flash("Title (max 255) or description (max 2000) too long.", "danger")
+        return redirect(url_for("add_task_page"))
 
     db = get_db()
     cursor = db.cursor()
@@ -79,7 +147,11 @@ def add_task():
     db.commit()
     cursor.close()
 
-    return jsonify({"message": "Task added successfully"}), 201
+    if request.is_json:
+        return jsonify({"message": "Task added successfully"}), 201
+
+    flash("Task added successfully!", "success")
+    return redirect(url_for("tasks_page"))
 
 
 @app.route("/toggle/<int:task_id>", methods=["PATCH"])
@@ -116,47 +188,60 @@ def delete_task(task_id):
     return jsonify({"message": "Task deleted successfully"}), 200
 
 
-@app.route("/edit/<int:task_id>", methods=["PUT"])
+@app.route("/edit/<int:task_id>", methods=["GET", "POST", "PUT"])
 def edit_task(task_id):
-    data = request.get_json()
-    title = data.get("title", "").strip()
-    description = data.get("description", "").strip()
-
-    if not title or not description:
-        return jsonify({"error": "Title and description required"}), 400
-
-    if len(title) > 255 or len(description) > 2000:
-        return jsonify({"error": "Title (max 255) or description (max 2000) too long"}), 400
-
     db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT id FROM tasks WHERE id=%s", (task_id,))
-    if not cursor.fetchone():
-        cursor.close()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tasks WHERE id=%s", (task_id,))
+    task = cursor.fetchone()
+    cursor.close()
+
+    if not task:
+        if request.method == "GET":
+            flash("Task not found.", "danger")
+            return redirect(url_for("tasks_page"))
         return jsonify({"error": "Task not found"}), 404
 
+    # GET - show edit form
+    if request.method == "GET":
+        back_url = url_for("completed_page") if task["completed"] else url_for("tasks_page")
+        return render_template("edit_task.html", task=task, back_url=back_url)
+
+    # POST (form) or PUT (JSON API)
+    if request.is_json:
+        data = request.get_json()
+        title = data.get("title", "").strip()
+        description = data.get("description", "").strip()
+    else:
+        title = request.form.get("title", "").strip()
+        description = request.form.get("description", "").strip()
+
+    if not title or not description:
+        if request.is_json:
+            return jsonify({"error": "Title and description required"}), 400
+        flash("Title and description are required.", "danger")
+        return redirect(url_for("edit_task", task_id=task_id))
+
+    if len(title) > 255 or len(description) > 2000:
+        if request.is_json:
+            return jsonify({"error": "Title (max 255) or description (max 2000) too long"}), 400
+        flash("Title (max 255) or description (max 2000) too long.", "danger")
+        return redirect(url_for("edit_task", task_id=task_id))
+
+    cursor = db.cursor()
     cursor.execute(
         "UPDATE tasks SET title=%s, description=%s WHERE id=%s",
         (title, description, task_id),
     )
     db.commit()
     cursor.close()
-    return jsonify({"message": "Task updated successfully"}), 200
 
+    if request.is_json:
+        return jsonify({"message": "Task updated successfully"}), 200
 
-@app.route("/completed")
-def completed_tasks():
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM tasks WHERE completed=1 ORDER BY id DESC")
-    tasks = cursor.fetchall()
-    cursor.close()
-
-    for task in tasks:
-        if task.get("created_at"):
-            task["created_at"] = task["created_at"].strftime("%Y-%m-%d %H:%M")
-
-    return jsonify(tasks), 200
+    flash("Task updated successfully!", "success")
+    redirect_url = url_for("completed_page") if task["completed"] else url_for("tasks_page")
+    return redirect(redirect_url)
 
 
 if __name__ == "__main__":

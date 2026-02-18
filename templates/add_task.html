@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Task Manager - Add Task{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white fw-bold">
+                <i class="bi bi-plus-circle"></i> Add New Task
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_task') }}">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Enter task title" maxlength="255" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description"
+                                  rows="3" placeholder="Enter task description" maxlength="2000" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-plus-circle"></i> Add Task
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

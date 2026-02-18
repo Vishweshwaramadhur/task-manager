@@ -3,10 +3,6 @@
     text-decoration: line-through;
 }
 
-#done-table th {
-    white-space: nowrap;
-}
-
 .task-edit .form-control {
     max-width: 300px;
 }
@@ -19,4 +15,25 @@
 
 .btn-group-wrap {
     flex-shrink: 0;
+}
+
+/* Active nav link highlight */
+.navbar-nav .nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid #fff;
+}
+
+/* Dashboard cards */
+.card.shadow .display-4 {
+    opacity: 0.8;
+}
+
+.card.shadow:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Completed table */
+.table th {
+    white-space: nowrap;
 }

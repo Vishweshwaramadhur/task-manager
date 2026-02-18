@@ -1,19 +1,29 @@
 # Task Manager
 
-A simple task manager web app built with Flask and MySQL that lets you create, complete, and delete tasks with a clean Bootstrap UI.
+A simple task manager web app built with Flask and MySQL with a clean multi-page Bootstrap UI.
 
 ## Features
 
-- Add new tasks with title and description
-- Edit tasks inline (both pending and completed tasks)
-- Mark tasks as complete (moves them off the main page)
-- Delete tasks (both pending and completed)
-- View completed tasks in a separate modal
-- Main page shows only pending tasks
-- Task timestamps (created at)
+- **Dashboard** with pending and completed task counts
+- **Add tasks** with title and description on a dedicated page
+- **Edit tasks** on a separate edit page with save and cancel
+- **Mark tasks as complete** from the pending tasks page
+- **Delete tasks** (both pending and completed)
+- **View completed tasks** on a full-page table
+- Template inheritance with a shared navbar
 - Input validation (length limits, required fields)
+- Flash messages for success/error feedback
 - Responsive design with Bootstrap 5
-- Error handling
+
+## Pages
+
+| URL | Page | Description |
+|-----|------|-------------|
+| `/` | Dashboard | Task counts + links to all pages |
+| `/add-task` | Add Task | Form to create a new task |
+| `/tasks` | Pending Tasks | List with complete/edit/delete actions |
+| `/completed` | Completed Tasks | Table with edit/delete actions |
+| `/edit/<id>` | Edit Task | Form to edit title and description |
 
 ## Tech Stack
 
@@ -66,7 +76,12 @@ task-manager/
 ├── .env.sample
 ├── .gitignore
 ├── templates/
-│   └── index.html
+│   ├── base.html
+│   ├── index.html
+│   ├── add_task.html
+│   ├── tasks.html
+│   ├── completed.html
+│   └── edit_task.html
 ├── static/
 │   ├── css/
 │   │   └── style.css
@@ -81,6 +96,7 @@ Create a `.env` file with the following variables:
 
 ```
 FLASK_DEBUG=True
+SECRET_KEY=your_secret_key_here
 
 DB_HOST=localhost
 DB_USER=your_user_here
