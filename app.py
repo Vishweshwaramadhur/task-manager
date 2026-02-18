@@ -28,32 +28,72 @@ SORT_OPTIONS = {
 
 CATEGORIES = ["Study", "Shopping", "Business", "Personal", "Health", "Finance", "Travel", "Other"]
 
-DUMMY_TASKS = [
-    ("Complete Math Assignment", "Finish chapters 5 and 6 exercises", "Study", False),
-    ("Read Science Textbook", "Read pages 100-150 for upcoming test", "Study", False),
-    ("Prepare Presentation", "Create slides for history project", "Study", True),
-    ("Buy Groceries", "Milk, eggs, bread, vegetables, fruits", "Shopping", False),
-    ("Order New Headphones", "Check reviews and order from Amazon", "Shopping", False),
-    ("Buy Birthday Gift", "Get a gift for friend's birthday party", "Shopping", True),
-    ("Client Meeting Prep", "Prepare agenda and slides for Monday meeting", "Business", False),
-    ("Send Invoice", "Send pending invoices to 3 clients", "Business", False),
-    ("Update Business Plan", "Revise Q2 targets and budget", "Business", True),
-    ("Clean Room", "Organize desk and wardrobe", "Personal", False),
-    ("Call Parents", "Weekly catch-up call with family", "Personal", False),
-    ("Renew Passport", "Submit renewal application online", "Personal", True),
-    ("Morning Workout", "30 min jogging + stretching routine", "Health", False),
-    ("Book Doctor Appointment", "Annual health checkup with Dr. Sharma", "Health", False),
-    ("Meal Prep Sunday", "Prepare healthy meals for the week", "Health", True),
-    ("Pay Electricity Bill", "Due date is end of this month", "Finance", False),
-    ("Review Monthly Budget", "Track expenses and savings for this month", "Finance", False),
-    ("File Tax Returns", "Gather documents and submit returns", "Finance", True),
-    ("Book Flight Tickets", "Check prices for Goa trip next month", "Travel", False),
-    ("Pack Travel Bag", "Prepare checklist and pack essentials", "Travel", False),
-    ("Hotel Reservation", "Book hotel for weekend getaway", "Travel", True),
-    ("Fix Leaking Tap", "Call plumber or fix it yourself", "Other", False),
-    ("Update Resume", "Add recent projects and skills", "Other", False),
-    ("Return Library Books", "3 books due this Friday", "Other", True),
-]
+CATEGORY_TEMPLATES = {
+    "Study": [
+        ("Complete {} assignment", "Finish all exercises for {} before the deadline"),
+        ("Read {} textbook", "Read chapters on {} for the upcoming exam"),
+        ("Prepare {} presentation", "Create slides and notes for {} project"),
+        ("Revise {} notes", "Go through all {} notes and make summaries"),
+        ("Submit {} homework", "Complete and submit the {} homework on time"),
+        ("Practice {} problems", "Solve at least 10 practice problems in {}"),
+    ],
+    "Shopping": [
+        ("Buy {} from store", "Pick up {} along with other essentials"),
+        ("Order {} online", "Check reviews and order {} from the best seller"),
+        ("Get {} for kitchen", "Need to restock {} for the week"),
+        ("Shop for {} clothes", "Find good deals on {} at the mall"),
+        ("Purchase {} supplies", "Buy {} supplies before they run out"),
+        ("Compare prices for {}", "Check multiple stores for the best price on {}"),
+    ],
+    "Business": [
+        ("Prepare {} report", "Draft and review the {} report for management"),
+        ("Schedule {} meeting", "Set up a meeting to discuss {} with the team"),
+        ("Send {} proposal", "Finalize and send the {} proposal to the client"),
+        ("Review {} contract", "Go through the {} contract terms carefully"),
+        ("Update {} strategy", "Revise the {} strategy based on recent data"),
+        ("Follow up on {} deal", "Check status and follow up on the {} deal"),
+    ],
+    "Personal": [
+        ("Organize {}", "Sort and organize {} at home this weekend"),
+        ("Call {} friend", "Catch up with {} over a phone call"),
+        ("Fix {} at home", "Repair or replace the broken {} at home"),
+        ("Clean {}", "Deep clean the {} area thoroughly"),
+        ("Plan {} event", "Make arrangements for the upcoming {} event"),
+        ("Update {} documents", "Renew or update all {} related documents"),
+    ],
+    "Health": [
+        ("Do {} workout", "Complete a full {} workout session today"),
+        ("Book {} appointment", "Schedule a {} checkup with the doctor"),
+        ("Prepare {} meal", "Cook a healthy {} meal for the day"),
+        ("Track {} intake", "Log daily {} intake in the health app"),
+        ("Buy {} supplements", "Purchase {} supplements from the pharmacy"),
+        ("Try {} exercise", "Start a new {} exercise routine this week"),
+    ],
+    "Finance": [
+        ("Pay {} bill", "Clear the pending {} bill before due date"),
+        ("Review {} expenses", "Analyze last month's {} spending"),
+        ("Set up {} budget", "Create a monthly budget for {} expenses"),
+        ("Compare {} plans", "Research and compare different {} plans"),
+        ("File {} paperwork", "Complete and submit {} financial paperwork"),
+        ("Cancel unused {} subscription", "Stop paying for the unused {} service"),
+    ],
+    "Travel": [
+        ("Book {} tickets", "Search and book the best {} tickets available"),
+        ("Pack {} essentials", "Prepare and pack all {} essentials for the trip"),
+        ("Reserve {} accommodation", "Find and book {} accommodation online"),
+        ("Plan {} itinerary", "Create a detailed {} travel itinerary"),
+        ("Get {} insurance", "Purchase {} travel insurance before the trip"),
+        ("Download {} maps", "Save offline {} maps for navigation"),
+    ],
+    "Other": [
+        ("Donate old {}", "Gather and donate old {} to charity"),
+        ("Return {} to store", "Take back the {} and get a refund"),
+        ("Register for {} course", "Sign up for an online {} course"),
+        ("Replace {} at home", "Buy a new {} to replace the old one"),
+        ("Organize {} files", "Sort through and organize all {} files"),
+        ("Learn about {}", "Spend time researching and learning about {}"),
+    ],
+}
 
 
 def get_db():
@@ -92,14 +132,29 @@ def init_db():
 
 
 def seed_db():
+    import random
+    from faker import Faker
+    fake = Faker()
+
+    tasks = []
+    for category in CATEGORIES:
+        templates = CATEGORY_TEMPLATES[category]
+        chosen = random.sample(templates, 3)
+        for title_tpl, desc_tpl in chosen:
+            word = fake.word().capitalize()
+            title = title_tpl.format(word)
+            description = desc_tpl.format(word)
+            completed = random.choice([True, False])
+            tasks.append((title, description, category, completed))
+
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
     cursor.executemany(
         "INSERT INTO tasks (title, description, category, completed) VALUES (%s, %s, %s, %s)",
-        DUMMY_TASKS,
+        tasks,
     )
     conn.commit()
-    print(f"{len(DUMMY_TASKS)} dummy tasks added across all categories.")
+    print(f"{len(tasks)} dummy tasks added across all categories.")
     cursor.close()
     conn.close()
 

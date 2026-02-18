@@ -14,7 +14,7 @@ A multi-page task manager web app built with Flask and MySQL with a clean Bootst
 - **Clear all pending** — bulk delete all pending tasks (per page or per category)
 - **Clear all completed** — bulk delete all completed tasks (per page or per category)
 - **Export as PDF** — download tasks as PDF (all, pending, completed, or per category)
-- **Seed dummy data** — terminal command to add 24 sample tasks (3 per category)
+- **Seed dummy data** — terminal command to generate 24 unique random tasks using Faker (3 per category)
 - **Back to Home** navigation on every page
 - Input validation (length limits, required fields)
 - Flash messages for success/error feedback
@@ -34,7 +34,7 @@ A multi-page task manager web app built with Flask and MySQL with a clean Bootst
 
 ## Tech Stack
 
-- **Backend:** Flask, MySQL Connector, python-dotenv, fpdf2
+- **Backend:** Flask, MySQL Connector, python-dotenv, fpdf2, Faker
 - **Frontend:** HTML5, Bootstrap 5, Bootstrap Icons, JavaScript
 - **Database:** MySQL
 
